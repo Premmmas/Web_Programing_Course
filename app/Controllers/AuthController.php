@@ -20,26 +20,36 @@ class AuthController extends BaseController
     public function login()
     {
         if ($this->request->getPost()) {
-            $username = $this->request->getVar('username');
-            $password = $this->request->getVar('password');
+            $rules = [
+                'username' => 'required|min_length[6]',
+                'password' => 'required|min_length[7]|numeric',
+            ];
 
-            $dataUser = $this->userModel ->where(['username' => $username])->first();
+            if ($this->validate($rules)) {
+                $username = $this->request->getVar('username');
+                $password = $this->request->getVar('password');
 
-            if ($dataUser) {
-	            if (password_verify($password, $dataUser['password'])) {
-                    session()->set([
-                        'username' => $dataUser['username'],
-                        'role' => $dataUser['role'],
-                        'isLoggedIn' => TRUE
-                    ]);
+                $dataUser = $this->userModel ->where(['username' => $username])->first();
 
-                    return redirect()->to(base_url('/'));
+                if ($dataUser) {
+                    if (password_verify($password, $dataUser['password'])) {
+                        session()->set([
+                            'username' => $dataUser['username'],
+                            'role' => $dataUser['role'],
+                            'isLoggedIn' => TRUE
+                        ]);
+
+                        return redirect()->to(base_url('/'));
+                    } else {
+                        session()->setFlashdata('failed', 'Username & Password Salah');
+                        return redirect()->back();
+                    }
                 } else {
-                    session()->setFlashdata('failed', 'Username & Password Salah');
+                    session()->setFlashdata('failed', 'Username Tidak Ditemukan');
                     return redirect()->back();
                 }
             } else {
-                session()->setFlashdata('failed', 'Username Tidak Ditemukan');
+                session()->setFlashdata('failed', $this->validator->listErrors());
                 return redirect()->back();
             }
         } else {

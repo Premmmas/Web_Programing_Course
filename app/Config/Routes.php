@@ -7,9 +7,14 @@ use CodeIgniter\Router\RouteCollection;
  */
 $routes->get('/', 'Home::index');
 
-$routes->get('login', 'AuthController::login');
+$routes->get('login', 'AuthController::login'); 
 $routes->post('login', 'AuthController::login');
 $routes->get('logout', 'AuthController::logout');
+
+$routes->ge('produk', 'ProdukController::create', ['filter' => 'auth']);
+$routes->post('produk', 'ProdukController::create', ['filter' => 'auth']);
+$routes->post('produk/edit/(:any)', 'ProdukController::edit/$1', ['filter' => 'auth']);
+$routes->get('produk/delete/(:any)', 'ProdukController::delete/$1', ['filter' => 'auth']);
 
 $routes->get('/produk', 'ProdukController::index');
 $routes->get('/keranjang', 'TransaksiController::index');

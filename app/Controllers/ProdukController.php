@@ -13,6 +13,7 @@ class ProdukController extends BaseController
 
     function __construct()
     {
+        helper('form');
         $this->productModel = new ProductModel();
     }
     
@@ -22,4 +23,25 @@ class ProdukController extends BaseController
             'products' => $this->productModel->findAll()
         ]);
     }
+    public function create()
+{
+    $dataFoto = $this->request->getFile('foto');
+
+    $dataForm = [
+        'nama' => $this->request->getPost('nama'),
+        'harga' => $this->request->getPost('harga'),
+        'jumlah' => $this->request->getPost('jumlah') 
+    ];
+
+    if ($dataFoto->isValid()) {
+        $fileName = $dataFoto->getRandomName(); 
+        $dataFoto->move('img/', $fileName);
+        
+        $dataForm['foto'] = $fileName;
+    }
+
+    $this->productModel->insert($dataForm);
+
+    return redirect('produk')->with('success', 'Data Berhasil Ditambah');
+} 
 }

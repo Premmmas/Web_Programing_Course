@@ -16,6 +16,6 @@ class Home extends BaseController
     {
         return view('v_home', [
             'products' => $this->productModel->findAll()
-        ]);// baru sampe step 4
+        ]);
     }
 }

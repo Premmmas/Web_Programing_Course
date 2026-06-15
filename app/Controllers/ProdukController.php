@@ -18,6 +18,8 @@ class ProdukController extends BaseController
     
     public function index()
     {
-        return view('v_produk');
+        return view('produk/index', [
+            'products' => $this->productModel->findAll()
+        ]);
     }
 }
